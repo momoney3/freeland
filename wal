@@ -1,0 +1,65 @@
+
+pkg install git pkgconf gmake gcc evdev-proto cmake wayland-protocols wayland libglvnd libxkbcommon libinput cairo pango pixman libxcb
+pkg install meson jq `pkg rquery %dn wlroots` hwdata libdisplay-info libliftoff
+export CC=gcc CXX=g++ LDFLAGS="-static-libstdc++ -static-libgcc"
+
+
+
+
+#!/bin/bash
+
+export MOZ_ENABLE_WAYLAND=1
+export XDG_SESSION_TYPE=wayland
+export XDG_RUNTIME_DIR=/tmp/$USER/.xdg
+export CLUTTER_BACKEND=wayland
+export SDL_VIDEODRIVER=wayland
+export LIBGL_DRI3_ENABLE=1
+#export GDK_BACKEND=wayland
+export XKB_DEFAULT_RULES=evdev
+export QT_QPA_PLATFORM=wayland-egl
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export BEMENU_BACKEND=wayland
+export WLR_DRM_NO_ATOMIC=1
+export XCURSOR_THEME=whiteglass
+
+[ -d $XDG_RUNTIME_DIR ] || mkdir -m 700 -p $XDG_RUNTIME_DIR
+
+exec ck-launch-session dbus-launch --sh-syntax --exit-with-session Hyprland
+
+
+
+
+
+
+
+
+
+
+/etc/rc.conf:
+powerdxx_enable="YES"
+powerdxx_flags="-a hiadaptive -b adaptive -H75:85"
+
+be sure to load coretemp module, because powerdxx needs cpu core temperature.
+
+It works fine.
+
+
+Don't forget:
+
+- install powerdxx
+- edit rc.conf
+- load coretemp if amd64
+
+kldload coretemp
+
+- make sure that -H limits aren't higher then:
+
+sysctl -n hw.acpi.thermal.tz0._CRT
+sysctl -n dev.cpu.0.coretemp.tjmax
+
+Cheers,
+
+
+https://github.com/charlesrocket/freebsd-collection.git
+
+
